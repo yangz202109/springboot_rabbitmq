@@ -1,0 +1,24 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /mq
+
+#配置mq的地址
+spring:
+  rabbitmq:
+    host: 192.168.137.128
+    port: 5672
+    username: admin
+    password: 123
+    publisher-confirm-type: correlated #开启交换机确认消息
+    publisher-returns: true #开启消息的返回机制
+rabbitmq:
+  exchange:
+    normal: X
+    dead: Y
+  queue:
+    queue1: QA
+    queue2: QB
+    queue3: QC
+    dead_queue: QD
+
