@@ -19,14 +19,15 @@ import java.util.Map;
 @Configuration
 public class RabbitMQConfig {
 
-    /*普通交换机名称*/
+    /**普通交换机名称*/
     @Value("${rabbitmq.exchange.normal}")
     private String NORMAL_EXCHANGE;
-    /*死信交换机名称*/
+
+    /**死信交换机名称*/
     @Value("${rabbitmq.exchange.dead}")
     private String DEAD_EXCHANGE;
 
-    /*普通队列名称*/
+    /**普通队列名称*/
     @Value("${rabbitmq.queue.queue1}")
     private String NORMAL_QUEUE1;
     @Value("${rabbitmq.queue.queue2}")
@@ -34,18 +35,18 @@ public class RabbitMQConfig {
     @Value("${rabbitmq.queue.queue3}")
     private String NORMAL_QUEUE3;
 
-    /*死信队列名称*/
+    /**死信队列名称*/
     @Value("${rabbitmq.queue.dead_queue}")
     private String DEAD_QUEUE;
 
 
-    /*创建普通交换机*/
+    /**创建普通交换机*/
     @Bean
     public DirectExchange normalExchange() {
         return new DirectExchange(NORMAL_EXCHANGE);
     }
 
-    /*创建死信交换机*/
+    /**创建死信交换机*/
     @Bean
     public DirectExchange deadExchange() {
         return new DirectExchange(DEAD_EXCHANGE);
@@ -53,41 +54,43 @@ public class RabbitMQConfig {
 
     /*----------------------------------------------------------------------------*/
 
-    /*创建普通队列A-过期时间10秒*/
+    /**创建普通队列A-过期时间10秒*/
     @Bean
     public Queue normalQueueA() {
         /*设置关联的死信交换机*/
         Map<String, Object> arguments = new HashMap<>(3);
         arguments.put("x-dead-letter-exchange", DEAD_EXCHANGE);
         arguments.put("x-dead-letter-routing-key", "YD");
-        arguments.put("x-message-ttl", 10000); //该队列存放消息的时间ms
+        //该队列存放消息的时间ms
+        arguments.put("x-message-ttl", 10000);
         return new Queue(NORMAL_QUEUE1, false, false, false, arguments);
     }
 
-    /*A队列绑定交换机*/
+    /**A队列绑定交换机*/
     @Bean
     public Binding queueABindX() {
         return BindingBuilder.bind(normalQueueA()).to(normalExchange()).with("XA");
     }
 
-    /*创建普通队列B-过期时间40秒*/
+    /**创建普通队列B-过期时间40秒*/
     @Bean
     public Queue normalQueueB() {
         /*设置关联的死信交换机*/
         Map<String, Object> arguments = new HashMap<>(3);
         arguments.put("x-dead-letter-exchange", DEAD_EXCHANGE);
         arguments.put("x-dead-letter-routing-key", "YD");
-        arguments.put("x-message-ttl", 40000); //该队列存放消息的时间ms
+        //该队列存放消息的时间ms
+        arguments.put("x-message-ttl", 40000);
         return new Queue(NORMAL_QUEUE2, false, false, false, arguments);
     }
 
-    /*B队列绑定交换机*/
+    /**B队列绑定交换机*/
     @Bean
     public Binding queueBBindX() {
         return BindingBuilder.bind(normalQueueB()).to(normalExchange()).with("XB");
     }
 
-    /*创建普通队列C*/
+    /**创建普通队列C*/
     @Bean
     public Queue normalQueueC(){
         /*设置关联的死信交换机*/
@@ -98,23 +101,22 @@ public class RabbitMQConfig {
         return new Queue(NORMAL_QUEUE3, false, false, false, arguments);
     }
 
-    /*c队列绑定交换机*/
+    /**c队列绑定交换机*/
     @Bean
     public Binding queueCBindX(){
         return BindingBuilder.bind(normalQueueC()).to(normalExchange()).with("XC");
     }
 
-    /*创建死信队列*/
+    /**创建死信队列*/
     @Bean
     public Queue deadQueue() {
         return new Queue(DEAD_QUEUE);
     }
 
-    /*死信队列绑定死信交换机*/
+    /**死信队列绑定死信交换机*/
     @Bean
     public Binding deadQueueBind() {
         return BindingBuilder.bind(deadQueue()).to(deadExchange()).with("YD");
     }
-
 
 }

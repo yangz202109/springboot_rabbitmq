@@ -16,17 +16,17 @@ import java.util.Map;
  */
 @Configuration
 public class DelayedQueueConfig {
-    /*交换机名称*/
+    /**交换机名称*/
     public static final String DELAYED_EXCHANGE_NAME = "DE";
-    /*队列名称*/
+    /**队列名称*/
     public static final String DELAYED_QUEUE_NAME = "DQN";
-    /*路由key*/
+    /**路由key*/
     public static final String DELAYED_ROUTING_KEY = "DK";
 
-    /*创建交换机*/
+    /**创建延迟交换机*/
     @Bean
     public CustomExchange delayedExchange() {
-        Map<String, Object> arguments = new HashMap<>();
+        Map<String, Object> arguments = new HashMap<>(1);
         arguments.put("x-delayed-type", "direct");
 
         /*
@@ -41,13 +41,13 @@ public class DelayedQueueConfig {
         return new CustomExchange(DELAYED_EXCHANGE_NAME, "x-delayed-message", true, false, arguments);
     }
 
-    /*创建队列*/
+    /**创建延迟队列*/
     @Bean
     public Queue delayedQueue() {
         return new Queue(DELAYED_QUEUE_NAME, false);
     }
 
-    /*绑定*/
+    /**绑定*/
     @Bean
     public Binding delayedQueueBindDelayedExchange() {
         return BindingBuilder.bind(delayedQueue()).to(delayedExchange()).with(DELAYED_ROUTING_KEY).noargs();

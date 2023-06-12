@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 /**
  * @author yangz
  * @date 2022/5/30 - 9:55
+ * 自定义回调处理类
  */
 @Slf4j
 @Component
@@ -20,7 +21,7 @@ public class MyCallback implements RabbitTemplate.ConfirmCallback, RabbitTemplat
 
     @PostConstruct
     public void init() {
-        /*注入,自定义的回调接口实现类*/
+        /*注入,使用自定义的回调接口实现类*/
         rabbitTemplate.setConfirmCallback(this);
         rabbitTemplate.setReturnsCallback(this);
     }

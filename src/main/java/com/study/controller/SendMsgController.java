@@ -8,7 +8,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 
@@ -20,15 +19,21 @@ import java.util.Date;
 @RestController
 public class SendMsgController {
     private final RabbitTemplate rabbitTemplate;
+
     @Autowired
     public SendMsgController(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    /*普通交换机名称*/
+    /**
+     * 普通交换机名称
+     */
     @Value("${rabbitmq.exchange.normal}")
     private String NORMAL_EXCHANGE;
 
+    /**
+     * 发送消息
+     */
     @GetMapping("/sendMessage")
     public void sendMessage(String message) {
 
@@ -39,6 +44,9 @@ public class SendMsgController {
         rabbitTemplate.convertAndSend(NORMAL_EXCHANGE, "XB", message);
     }
 
+    /**
+     * 发送定时消息
+     */
     @GetMapping("/sendMessageAndTime")
     public void sendMessageAndTime(String message, String time) {
 
@@ -52,6 +60,9 @@ public class SendMsgController {
         });
     }
 
+    /**
+     * 发送延迟消息
+     */
     @GetMapping("/sendDelayMsg")
     public void sendDelayMsg(String message, Integer time) {
         log.info("当前时间: {},开始发送消息", new Date());
@@ -77,7 +88,7 @@ public class SendMsgController {
         CorrelationData correlationData2 = new CorrelationData();
         correlationData2.setId("2");
         rabbitTemplate.convertAndSend(ConfirmConfig.CONFIRM_EXCHANGE_NAME,
-                ConfirmConfig.CONFIRM_ROUTING_KEY+ "11" , message, correlationData2);
+                ConfirmConfig.CONFIRM_ROUTING_KEY + "11", message, correlationData2);
 
         log.info("发布消息完毕");
     }
